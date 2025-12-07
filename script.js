@@ -1,40 +1,15 @@
-const API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent";
+// script.js (Clean Version)
 
 document.addEventListener('DOMContentLoaded', () => {
     loadNotes();
-    setupEventListeners();
-    checkApiKey();
-});
-
-function setupEventListeners() {
-    // KEEP THIS LINE (It makes the main button work)
+    // Only one event listener needed now
     document.getElementById('save-btn').addEventListener('click', handleInput);
-
-    // DELETE everything else (Modal controls, settings-btn, save-settings-btn)
-}
-
-function checkApiKey() {
-    const key = localStorage.getItem('geminiApiKey');
-    const status = document.getElementById('status-bar');
-    if (!key) {
-        status.textContent = "⚠️ Missing API Key. Click Settings to configure.";
-        status.style.color = "#ff6b6b";
-    } else {
-        status.textContent = "AI System Ready.";
-        status.style.color = "#a0a0a0";
-    }
-}
+});
 
 async function handleInput() {
     const inputField = document.getElementById('user-input');
     const text = inputField.value.trim();
     if (!text) return;
-
-    const apiKey = localStorage.getItem('geminiApiKey');
-    if (!apiKey) {
-        alert("Please set your Gemini API Key in settings first.");
-        return;
-    }
 
     // UI Feedback
     const btn = document.getElementById('save-btn');
@@ -44,18 +19,20 @@ async function handleInput() {
     btn.innerText = "Thinking...";
     btn.disabled = true;
     status.textContent = "Analyzing content structure...";
+    status.style.color = "#a0a0a0"; // Reset color
 
     try {
-        const aiResult = await classifyWithGemini(text, apiKey);
+        // Send text to YOUR Vercel API (No key needed here)
+        const aiResult = await classifyWithGemini(text);
+        
         saveNote(aiResult);
         inputField.value = '';
         loadNotes();
         status.textContent = "Organized successfully!";
-        setTimeout(() => checkApiKey(), 2000);
     } catch (error) {
         console.error(error);
         status.textContent = "Error: " + error.message;
-        alert("Failed to organize. Check your API key or internet connection.");
+        status.style.color = "#ff6b6b";
     } finally {
         btn.innerText = originalText;
         btn.disabled = false;
@@ -63,8 +40,6 @@ async function handleInput() {
 }
 
 async function classifyWithGemini(text) {
-    // We no longer need the API key here!
-    // We send the text to OUR own secure API
     const response = await fetch('/api/organize', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -72,11 +47,11 @@ async function classifyWithGemini(text) {
     });
 
     if (!response.ok) {
-        const err = await response.json();
-        throw new Error(err.error || "Server Error");
+        // If the server fails, try to read the error message
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || `Server Error: ${response.status}`);
     }
 
-    // The server returns the clean JSON note object directly
     return await response.json();
 }
 
@@ -95,32 +70,33 @@ function loadNotes() {
     
     // Clear lists
     ['read', 'tools', 'shop', 'other'].forEach(id => {
-        document.getElementById(`list-${id}`).innerHTML = '';
+        const list = document.getElementById(`list-${id}`);
+        if(list) list.innerHTML = '';
     });
 
     notes.forEach(note => {
         const category = ['read', 'tools', 'shop', 'other'].includes(note.category) ? note.category : 'other';
         const list = document.getElementById(`list-${category}`);
         
-        const li = document.createElement('li');
-        li.className = 'card';
-        
-        // Determine if it's a clickable link or just text
-        const contentHtml = note.url 
-            ? `<a href="${note.url}" target="_blank"><span class="card-title">🔗 ${note.title}</span>` 
-            : `<span class="card-title">📝 ${note.title}</span>`;
+        if (list) {
+            const li = document.createElement('li');
+            li.className = 'card';
+            
+            const contentHtml = note.url 
+                ? `<a href="${note.url}" target="_blank"><span class="card-title">🔗 ${note.title}</span>` 
+                : `<span class="card-title">📝 ${note.title}</span>`;
 
-        li.innerHTML = `
-            <div class="delete-btn" onclick="deleteNote(${note.id})">&times;</div>
-            ${contentHtml}
-            <div class="card-summary">${note.summary}</div>
-            ${note.url ? '</a>' : ''}
-        `;
-        list.appendChild(li);
+            li.innerHTML = `
+                <div class="delete-btn" onclick="deleteNote(${note.id})">&times;</div>
+                ${contentHtml}
+                <div class="card-summary">${note.summary}</div>
+                ${note.url ? '</a>' : ''}
+            `;
+            list.appendChild(li);
+        }
     });
 }
 
-// Global delete function
 window.deleteNote = (id) => {
     const notes = JSON.parse(localStorage.getItem('mindscapeNotes') || "[]");
     const newNotes = notes.filter(n => n.id !== id);
