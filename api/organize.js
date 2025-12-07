@@ -1,19 +1,16 @@
-// api/organize.js
 export default async function handler(req, res) {
-    // 1. Check if the request is valid
     if (req.method !== 'POST') {
         return res.status(405).json({ error: 'Method not allowed' });
     }
 
     const { text } = req.body;
-    const apiKey = process.env.GEMINI_API_KEY; // This grabs the key from the secure vault
+    const apiKey = process.env.GEMINI_API_KEY;
 
     if (!apiKey) {
-        return res.status(500).json({ error: 'Server misconfigured: No API Key' });
+        return res.status(500).json({ error: 'Server Misconfigured: No GEMINI_API_KEY found in Vercel Settings.' });
     }
 
     try {
-        // 2. Call Google Gemini (Server to Server)
         const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -29,9 +26,24 @@ export default async function handler(req, res) {
             })
         });
 
-        const data = await response.json();
+        // --- NEW SAFETY CHECK ---
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}));
+            console.error("Google Gemini API Error:", JSON.stringify(errorData, null, 2));
+            // This will show the ACTUAL Google error on your website
+            return res.status(response.status).json({ 
+                error: `Google Error: ${errorData.error?.message || response.statusText}` 
+            });
+        }
+        // ------------------------
 
-        // 3. Clean the response and send it back to your frontend
+        const data = await response.json();
+        
+        // Safety check: Did Google return a candidate?
+        if (!data.candidates || data.candidates.length === 0) {
+             return res.status(500).json({ error: "AI returned no results. Try a shorter text." });
+        }
+
         let rawText = data.candidates[0].content.parts[0].text;
         rawText = rawText.replace(/```json|```/g, '').trim();
         const jsonResult = JSON.parse(rawText);
@@ -39,7 +51,7 @@ export default async function handler(req, res) {
         res.status(200).json(jsonResult);
 
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'AI processing failed' });
+        console.error("Server Crash:", error);
+        res.status(500).json({ error: `Server Crash: ${error.message}` });
     }
 }
