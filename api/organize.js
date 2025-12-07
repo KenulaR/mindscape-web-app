@@ -12,7 +12,7 @@ export default async function handler(req, res) {
 
     // FIX: Using a model CONFIRMED to be in your available list
     // 'gemini-2.0-flash-001' is fast, capable, and stable.
-    const MODEL_NAME = "gemini-2.0-flash-001"; 
+    const MODEL_NAME = "gemini-2.0-flash-exp"; 
 
     try {
         const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${MODEL_NAME}:generateContent?key=${apiKey}`, {
