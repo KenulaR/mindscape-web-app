@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MindScape | AI Notepad</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <h1>MindScape 🧠</h1>
+                <p>Your AI-powered digital clutter organizer</p>
+            </div>
+        </header>
+
+        <div class="input-section">
+            <div class="input-wrapper">
+                <textarea id="user-input" placeholder="Paste a link, a wishlist item, or a random thought here..."></textarea>
+                <div class="status-bar" id="status-bar">Ready to organize.</div>
+            </div>
+            <button id="save-btn" class="primary-btn">✨ Auto-Organize</button>
+        </div>
+
+        <div id="content-grid" class="grid">
+            <div class="column">
+                <div class="col-header">📖 To Read</div>
+                <ul id="list-read" class="card-list"></ul>
+            </div>
+            <div class="column">
+                <div class="col-header">🛠️ Tools</div>
+                <ul id="list-tools" class="card-list"></ul>
+            </div>
+            <div class="column">
+                <div class="col-header">🛍️ Wishlist</div>
+                <ul id="list-shop" class="card-list"></ul>
+            </div>
+            <div class="column">
+                <div class="col-header">📂 Other</div>
+                <ul id="list-other" class="card-list"></ul>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="script.js"></script>
+</body>
+</html>
