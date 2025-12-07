@@ -1,11 +1,11 @@
 :root {
-    --bg-color: #0f0f0f;
-    --card-bg: #1e1e1e;
-    --text-main: #ffffff;
-    --text-muted: #a0a0a0;
-    --accent: #8ab4f8; 
-    --border: #333;
-    --font-stack: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    --bg-color: #000000;       /* OLED BLACK */
+    --card-bg: #000000;        /* Transparent/Black */
+    --text-main: #ffffff;      /* Pure White */
+    --text-muted: #666666;     /* Dark Grey */
+    --border: #333333;         /* Subtle border */
+    --accent: #ffffff;         /* White accent */
+    --font-stack: 'Space Mono', monospace; /* The Tech Font */
 }
 
 body {
@@ -20,79 +20,156 @@ body {
     min-height: 100vh;
 }
 
-.container { width: 100%; max-width: 1200px; padding: 40px 20px; }
+.container { width: 100%; max-width: 1400px; padding: 40px 20px; }
 
-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; border-bottom: 1px solid var(--border); padding-bottom: 20px; }
-h1 { margin: 0; font-size: 1.8rem; letter-spacing: -1px; }
-.logo p { margin: 5px 0 0 0; color: var(--text-muted); font-size: 0.9rem; }
+/* Typography & Header */
+h1 { 
+    margin: 0; 
+    font-size: 2rem; 
+    letter-spacing: -1px; 
+    text-transform: uppercase; 
+}
+.blink { animation: blinker 1s linear infinite; }
+@keyframes blinker { 50% { opacity: 0; } }
 
-/* Main AI Input */
+.logo p { 
+    margin: 5px 0 0 0; 
+    color: var(--text-muted); 
+    font-size: 0.8rem; 
+    letter-spacing: 2px;
+}
+
+header { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: flex-end; 
+    margin-bottom: 50px; 
+    border-bottom: 1px solid var(--border); 
+    padding-bottom: 20px; 
+}
+
+/* AI Input Section */
 .input-section {
-    background: var(--card-bg);
-    padding: 20px;
-    border-radius: 12px;
     border: 1px solid var(--border);
+    padding: 20px;
     margin-bottom: 50px;
     display: flex;
     flex-direction: column;
     gap: 15px;
 }
-textarea { width: 100%; height: 60px; background: transparent; border: none; color: white; font-size: 16px; resize: none; outline: none; font-family: var(--font-stack); }
-.status-bar { font-size: 0.8rem; color: var(--text-muted); text-align: right; }
-.primary-btn { background: var(--accent); color: #000; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: 600; align-self: flex-end; }
+textarea { 
+    width: 100%; 
+    height: 60px; 
+    background: transparent; 
+    border: none; 
+    color: var(--text-main); 
+    font-size: 14px; 
+    resize: none; 
+    outline: none; 
+    font-family: var(--font-stack); 
+    text-transform: uppercase;
+}
+textarea::placeholder { color: #333; }
 
-/* 3 Column Grid */
+.status-bar { 
+    font-size: 0.7rem; 
+    color: var(--text-muted); 
+    text-align: right; 
+    border-top: 1px dashed #222;
+    padding-top: 10px;
+}
+
+.primary-btn { 
+    background: var(--text-main); 
+    color: #000; 
+    border: none; 
+    padding: 10px 20px; 
+    cursor: pointer; 
+    font-weight: 700; 
+    font-family: var(--font-stack);
+    text-transform: uppercase;
+    align-self: flex-end; 
+    transition: all 0.2s;
+}
+.primary-btn:hover { background: #ccc; }
+
+/* Grid */
 .grid { 
     display: grid; 
-    grid-template-columns: repeat(3, 1fr); /* FORCED 3 COLUMNS */
-    gap: 20px; 
-}
-@media (max-width: 768px) { .grid { grid-template-columns: 1fr; } } /* Mobile friendly */
-
-.column { background: #161616; padding: 15px; border-radius: 12px; border: 1px solid var(--border); }
-.col-header { text-transform: uppercase; font-size: 0.9rem; font-weight: bold; color: var(--text-muted); margin-bottom: 15px; letter-spacing: 1px; }
-
-/* New Manual Input Groups */
-.manual-input-group {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
-    border-bottom: 1px solid #333;
-    padding-bottom: 15px;
-}
-.manual-input-group input {
-    background: #000;
+    grid-template-columns: repeat(3, 1fr); 
+    gap: 0; /* Removing gap for a unified border look */
     border: 1px solid var(--border);
-    color: white;
-    padding: 8px 12px;
-    border-radius: 6px;
-    flex-grow: 1;
-    outline: none;
 }
-.manual-input-group input:focus { border-color: var(--accent); }
-.manual-input-group button {
-    background: #333;
-    color: white;
-    border: none;
-    width: 35px;
-    border-radius: 6px;
-    cursor: pointer;
+@media (max-width: 768px) { .grid { grid-template-columns: 1fr; border: none; gap: 20px; } }
+
+.column { 
+    padding: 20px; 
+    border-right: 1px solid var(--border);
+    min-height: 400px;
+}
+.column:last-child { border-right: none; }
+
+.col-header { 
+    font-size: 0.8rem; 
+    font-weight: 700; 
+    color: var(--text-muted); 
+    margin-bottom: 25px; 
+    letter-spacing: 1px; 
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* MONOCHROME EMOJI HACK */
+.mono-icon {
+    filter: grayscale(100%) brightness(200%); /* Makes emojis white/grey */
     font-size: 1.2rem;
 }
-.manual-input-group button:hover { background: var(--accent); color: black; }
 
-/* Cards */
+/* Inputs */
+.manual-input-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 30px;
+    border-bottom: 1px solid #333;
+    padding-bottom: 5px;
+}
+.prompt { color: var(--text-muted); }
+
+.manual-input-group input {
+    background: transparent;
+    border: none;
+    color: white;
+    padding: 5px;
+    flex-grow: 1;
+    outline: none;
+    font-family: var(--font-stack);
+    font-size: 0.9rem;
+}
+.manual-input-group input::placeholder { color: #333; }
+
+/* Notes List */
 .card-list { list-style: none; padding: 0; margin: 0; }
 .card {
-    background: var(--card-bg);
-    border: 1px solid var(--border);
-    padding: 12px;
-    border-radius: 8px;
+    border: 1px solid #222;
+    padding: 15px;
     margin-bottom: 10px;
     position: relative;
-    word-break: break-all;
+    transition: border-color 0.2s;
+    font-size: 0.85rem;
 }
-.card a { color: var(--text-main); text-decoration: none; }
-.card:hover { border-color: var(--accent); }
-.delete-btn { position: absolute; top: 5px; right: 8px; color: var(--text-muted); cursor: pointer; opacity: 0; }
-.card:hover .delete-btn { opacity: 1; }
+.card:hover { border-color: var(--text-muted); }
+.card a { color: var(--text-main); text-decoration: none; display: block; }
+.card a:hover { text-decoration: underline; }
+
+.delete-btn { 
+    position: absolute; 
+    top: 5px; 
+    right: 8px; 
+    color: #333; 
+    cursor: pointer; 
+    font-size: 1.2rem;
+    line-height: 10px;
+}
+.card:hover .delete-btn { color: var(--text-main); }
