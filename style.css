@@ -1,11 +1,11 @@
 :root {
-    --bg-color: #000000;       /* OLED BLACK */
-    --card-bg: #000000;        /* Transparent/Black */
-    --text-main: #ffffff;      /* Pure White */
-    --text-muted: #666666;     /* Dark Grey */
-    --border: #333333;         /* Subtle border */
-    --accent: #ffffff;         /* White accent */
-    --font-stack: 'Space Mono', monospace; /* The Tech Font */
+    --bg-color: #000000;       
+    --card-bg: #000000;        
+    --text-main: #ffffff;      
+    --text-muted: #666666;     
+    --border: #333333;         
+    --accent: #ffffff;         
+    --font-stack: 'Space Mono', monospace;
 }
 
 body {
@@ -23,84 +23,43 @@ body {
 .container { width: 100%; max-width: 1400px; padding: 40px 20px; }
 
 /* Typography & Header */
-h1 { 
-    margin: 0; 
-    font-size: 2rem; 
-    letter-spacing: -1px; 
-    text-transform: uppercase; 
-}
+h1 { margin: 0; font-size: 2rem; letter-spacing: -1px; text-transform: uppercase; }
 .blink { animation: blinker 1s linear infinite; }
 @keyframes blinker { 50% { opacity: 0; } }
+.logo p { margin: 5px 0 0 0; color: var(--text-muted); font-size: 0.8rem; letter-spacing: 2px; }
 
-.logo p { 
-    margin: 5px 0 0 0; 
-    color: var(--text-muted); 
-    font-size: 0.8rem; 
-    letter-spacing: 2px;
-}
-
-header { 
-    display: flex; 
-    justify-content: space-between; 
-    align-items: flex-end; 
-    margin-bottom: 50px; 
-    border-bottom: 1px solid var(--border); 
-    padding-bottom: 20px; 
-}
+header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 50px; border-bottom: 1px solid var(--border); padding-bottom: 20px; }
 
 /* AI Input Section */
-.input-section {
-    border: 1px solid var(--border);
-    padding: 20px;
-    margin-bottom: 50px;
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-textarea { 
-    width: 100%; 
-    height: 60px; 
-    background: transparent; 
-    border: none; 
-    color: var(--text-main); 
-    font-size: 14px; 
-    resize: none; 
-    outline: none; 
-    font-family: var(--font-stack); 
-    text-transform: uppercase;
-}
+.input-section { border: 1px solid var(--border); padding: 20px; margin-bottom: 50px; display: flex; flex-direction: column; gap: 15px; }
+textarea { width: 100%; height: 60px; background: transparent; border: none; color: var(--text-main); font-size: 14px; resize: none; outline: none; font-family: var(--font-stack); text-transform: uppercase; }
 textarea::placeholder { color: #333; }
-
-.status-bar { 
-    font-size: 0.7rem; 
-    color: var(--text-muted); 
-    text-align: right; 
-    border-top: 1px dashed #222;
-    padding-top: 10px;
-}
-
-.primary-btn { 
-    background: var(--text-main); 
-    color: #000; 
-    border: none; 
-    padding: 10px 20px; 
-    cursor: pointer; 
-    font-weight: 700; 
-    font-family: var(--font-stack);
-    text-transform: uppercase;
-    align-self: flex-end; 
-    transition: all 0.2s;
-}
+.status-bar { font-size: 0.7rem; color: var(--text-muted); text-align: right; border-top: 1px dashed #222; padding-top: 10px; }
+.primary-btn { background: var(--text-main); color: #000; border: none; padding: 10px 20px; cursor: pointer; font-weight: 700; font-family: var(--font-stack); text-transform: uppercase; align-self: flex-end; transition: all 0.2s; }
 .primary-btn:hover { background: #ccc; }
 
-/* Grid */
+/* Grid System */
 .grid { 
     display: grid; 
     grid-template-columns: repeat(3, 1fr); 
-    gap: 0; /* Removing gap for a unified border look */
+    gap: 0; 
     border: 1px solid var(--border);
+    align-items: start; /* Prevents columns from stretching to match height unnecessarily */
 }
-@media (max-width: 768px) { .grid { grid-template-columns: 1fr; border: none; gap: 20px; } }
+
+/* --- MOBILE TWEAKS --- */
+@media (max-width: 768px) { 
+    .grid { 
+        grid-template-columns: 1fr; 
+        border: none; 
+        gap: 15px; /* Reduced gap so textboxes are closer */
+    } 
+    .column {
+        border-right: none;
+        border: 1px solid var(--border); /* Restore border for mobile cards */
+        min-height: auto; /* Let them grow naturally */
+    }
+}
 
 .column { 
     padding: 20px; 
@@ -109,67 +68,37 @@ textarea::placeholder { color: #333; }
 }
 .column:last-child { border-right: none; }
 
-.col-header { 
-    font-size: 0.8rem; 
-    font-weight: 700; 
-    color: var(--text-muted); 
-    margin-bottom: 25px; 
-    letter-spacing: 1px; 
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-/* MONOCHROME EMOJI HACK */
-.mono-icon {
-    filter: grayscale(100%) brightness(200%); /* Makes emojis white/grey */
-    font-size: 1.2rem;
-}
+.col-header { font-size: 0.8rem; font-weight: 700; color: var(--text-muted); margin-bottom: 25px; letter-spacing: 1px; display: flex; align-items: center; gap: 10px; }
+.mono-icon { filter: grayscale(100%) brightness(200%); font-size: 1.2rem; }
 
 /* Inputs */
-.manual-input-group {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 30px;
-    border-bottom: 1px solid #333;
-    padding-bottom: 5px;
-}
+.manual-input-group { display: flex; align-items: center; gap: 10px; margin-bottom: 30px; border-bottom: 1px solid #333; padding-bottom: 5px; }
 .prompt { color: var(--text-muted); }
-
-.manual-input-group input {
-    background: transparent;
-    border: none;
-    color: white;
-    padding: 5px;
-    flex-grow: 1;
-    outline: none;
-    font-family: var(--font-stack);
-    font-size: 0.9rem;
-}
+.manual-input-group input { background: transparent; border: none; color: white; padding: 5px; flex-grow: 1; outline: none; font-family: var(--font-stack); font-size: 0.9rem; }
 .manual-input-group input::placeholder { color: #333; }
 
 /* Notes List */
 .card-list { list-style: none; padding: 0; margin: 0; }
-.card {
-    border: 1px solid #222;
-    padding: 15px;
-    margin-bottom: 10px;
-    position: relative;
-    transition: border-color 0.2s;
-    font-size: 0.85rem;
-}
+.card { border: 1px solid #222; padding: 15px; padding-right: 30px; /* Make space for the big X */ margin-bottom: 10px; position: relative; transition: border-color 0.2s; font-size: 0.85rem; }
 .card:hover { border-color: var(--text-muted); }
 .card a { color: var(--text-main); text-decoration: none; display: block; }
 .card a:hover { text-decoration: underline; }
 
+/* --- BIGGER DELETE BUTTON --- */
 .delete-btn { 
     position: absolute; 
-    top: 5px; 
-    right: 8px; 
-    color: #333; 
+    top: 0; 
+    right: 0;
+    padding: 10px 15px; /* Large clickable area */
+    color: #444; 
     cursor: pointer; 
-    font-size: 1.2rem;
-    line-height: 10px;
+    font-size: 1.5rem; /* Bigger X */
+    line-height: 1;
+    z-index: 10; /* Ensures it sits on top */
+    transition: color 0.2s;
 }
-.card:hover .delete-btn { color: var(--text-main); }
+.card:hover .delete-btn { color: #ff4444; /* Turns red when you hover the card */ }
+/* On Mobile, always show the button slightly visible so users know it's there */
+@media (max-width: 768px) {
+    .delete-btn { color: #333; }
+}
