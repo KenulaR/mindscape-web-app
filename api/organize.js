@@ -7,12 +7,11 @@ export default async function handler(req, res) {
     const apiKey = process.env.GEMINI_API_KEY;
 
     if (!apiKey) {
-        return res.status(500).json({ error: 'Server Misconfigured: No GEMINI_API_KEY found in Vercel Settings.' });
+        return res.status(500).json({ error: 'Server Misconfigured: No GEMINI_API_KEY found.' });
     }
 
-    // FIX: Using the specific stable version 'gemini-1.5-flash-001'
-    // If this fails later, you can try 'gemini-pro'
-    const MODEL_NAME = "gemini-1.5-flash-001"; 
+    // FIX: Switched to 'gemini-pro'. It is the most widely supported model.
+    const MODEL_NAME = "gemini-pro"; 
 
     try {
         const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${MODEL_NAME}:generateContent?key=${apiKey}`, {
@@ -32,6 +31,7 @@ export default async function handler(req, res) {
 
         if (!response.ok) {
             const errorData = await response.json().catch(() => ({}));
+            // If even gemini-pro fails, this log will tell us exactly why (e.g., "API Key expired")
             console.error("Google Gemini API Error:", JSON.stringify(errorData, null, 2));
             return res.status(response.status).json({ 
                 error: `Google Error: ${errorData.error?.message || response.statusText}` 
@@ -41,7 +41,7 @@ export default async function handler(req, res) {
         const data = await response.json();
         
         if (!data.candidates || data.candidates.length === 0) {
-             return res.status(500).json({ error: "AI returned no results. Try a shorter text." });
+             return res.status(500).json({ error: "AI returned no results." });
         }
 
         let rawText = data.candidates[0].content.parts[0].text;
